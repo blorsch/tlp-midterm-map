@@ -1,6 +1,9 @@
 let map;
 const template = '<div class="content"><div class="header"><span class="name">{NAME}</span><span class="date">Est. {DATE}</span></div><div class="link"><a href="{LINK}">{LINK}</a></div><ul class="info">{POINTS}</ul>';  // I would do a DOM element if I had more time
 const sanRafael = {lat: 37.97, lng: -122.535};
+const blue = 'blue';
+const red = 'red';
+const purple = 'purple';
 
 function initMap() {
   map = new google.maps.Map(document.getElementById("map"), {
@@ -93,27 +96,28 @@ function initMap() {
       },
     ],
   });
-  city('San Rafael', '6969', 'sanrafaelsomething.com', "It's cool--it's poppin'--I'm there lol--Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.".split('--'), sanRafael.lat, sanRafael.lng);
+  city('San Rafael', '6969', 'sanrafaelsomething.com', "It's cool--it's poppin'--I'm there lol--Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.".split('--'), sanRafael.lat, sanRafael.lng, purple);
 }
 
 function city_content(name, date, link, points_array) {
   return template.replace('{NAME}', name).replace('{DATE}', date).replace(/{LINK}/g, link).replace('{POINTS}', '<li>'+points_array.join('</li><li>')+'</li>')
 }
 
-function add_marker(lat, long, content, label) {
+function add_marker(lat, long, content, label, color) {
   const infowindow = new google.maps.InfoWindow({
     content: content,
   });
   const marker = new google.maps.Marker({
     position: {lat: lat, lng: long},
-    map,
+    map: map,
     title: label,
+    icon: (color==='red'? 'red-dot.png' : (color==='blue'? 'blue-dot.png' : 'purple-dot.png'))
   });
   marker.addListener("click", () => {
     infowindow.open(map, marker);
   });
 }
 
-function city(name, date, link, points_array, lat, long) {
-  add_marker(lat, long, city_content(name, date, link, points_array), name);
+function city(name, date, link, points_array, lat, long, color) {
+  add_marker(lat, long, city_content(name, date, link, points_array), name, color);
 }
