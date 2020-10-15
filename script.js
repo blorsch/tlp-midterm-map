@@ -1,100 +1,100 @@
 let map;
+
 const template = '<div class="content"><div class="header"><span class="name">{NAME}</span><span class="date">Est. {DATE}</span></div><div class="link"><a href="{LINK}">{LINK}</a></div><ul class="info">{POINTS}</ul>';  // I would do a DOM element if I had more time
-const sanRafael = {lat: 37.97, lng: -122.535};
-const blue = 'blue';
-const red = 'red';
-const purple = 'purple';
+const center = {lat: 35, lng: 0};
+
+const darkmode = [  // dark mode styles
+  { elementType: "geometry", stylers: [{ color: "#242f3e" }] },
+  {
+    elementType: "labels.text.stroke",
+    stylers: [{ color: "#242f3e" }],
+  },
+  {
+    elementType: "labels.text.fill",
+    stylers: [{ color: "#746855" }],
+  },
+  {
+    featureType: "administrative.locality",
+    elementType: "labels.text.fill",
+    stylers: [{ color: "#d59563" }],
+  },
+  {
+    featureType: "poi",
+    elementType: "labels.text.fill",
+    stylers: [{ color: "#d59563" }],
+  },
+  {
+    featureType: "poi.park",
+    elementType: "geometry",
+    stylers: [{ color: "#263c3f" }],
+  },
+  {
+    featureType: "poi.park",
+    elementType: "labels.text.fill",
+    stylers: [{ color: "#6b9a76" }],
+  },
+  {
+    featureType: "road",
+    elementType: "geometry",
+    stylers: [{ color: "#38414e" }],
+  },
+  {
+    featureType: "road",
+    elementType: "geometry.stroke",
+    stylers: [{ color: "#212a37" }],
+  },
+  {
+    featureType: "road",
+    elementType: "labels.text.fill",
+    stylers: [{ color: "#9ca5b3" }],
+  },
+  {
+    featureType: "road.highway",
+    elementType: "geometry",
+    stylers: [{ color: "#746855" }],
+  },
+  {
+    featureType: "road.highway",
+    elementType: "geometry.stroke",
+    stylers: [{ color: "#1f2835" }],
+  },
+  {
+    featureType: "road.highway",
+    elementType: "labels.text.fill",
+    stylers: [{ color: "#f3d19c" }],
+  },
+  {
+    featureType: "transit",
+    elementType: "geometry",
+    stylers: [{ color: "#2f3948" }],
+  },
+  {
+    featureType: "transit.station",
+    elementType: "labels.text.fill",
+    stylers: [{ color: "#d59563" }],
+  },
+  {
+    featureType: "water",
+    elementType: "geometry",
+    stylers: [{ color: "#17263c" }],
+  },
+  {
+    featureType: "water",
+    elementType: "labels.text.fill",
+    stylers: [{ color: "#515c6d" }],
+  },
+  {
+    featureType: "water",
+    elementType: "labels.text.stroke",
+    stylers: [{ color: "#17263c" }],
+  },
+];
 
 function initMap() {
   map = new google.maps.Map(document.getElementById("map"), {
-    center: sanRafael,
-    zoom: 4,
-    styles: [  // dark mode
-      { elementType: "geometry", stylers: [{ color: "#242f3e" }] },
-      {
-        elementType: "labels.text.stroke",
-        stylers: [{ color: "#242f3e" }],
-      },
-      {
-        elementType: "labels.text.fill",
-        stylers: [{ color: "#746855" }],
-      },
-      {
-        featureType: "administrative.locality",
-        elementType: "labels.text.fill",
-        stylers: [{ color: "#d59563" }],
-      },
-      {
-        featureType: "poi",
-        elementType: "labels.text.fill",
-        stylers: [{ color: "#d59563" }],
-      },
-      {
-        featureType: "poi.park",
-        elementType: "geometry",
-        stylers: [{ color: "#263c3f" }],
-      },
-      {
-        featureType: "poi.park",
-        elementType: "labels.text.fill",
-        stylers: [{ color: "#6b9a76" }],
-      },
-      {
-        featureType: "road",
-        elementType: "geometry",
-        stylers: [{ color: "#38414e" }],
-      },
-      {
-        featureType: "road",
-        elementType: "geometry.stroke",
-        stylers: [{ color: "#212a37" }],
-      },
-      {
-        featureType: "road",
-        elementType: "labels.text.fill",
-        stylers: [{ color: "#9ca5b3" }],
-      },
-      {
-        featureType: "road.highway",
-        elementType: "geometry",
-        stylers: [{ color: "#746855" }],
-      },
-      {
-        featureType: "road.highway",
-        elementType: "geometry.stroke",
-        stylers: [{ color: "#1f2835" }],
-      },
-      {
-        featureType: "road.highway",
-        elementType: "labels.text.fill",
-        stylers: [{ color: "#f3d19c" }],
-      },
-      {
-        featureType: "transit",
-        elementType: "geometry",
-        stylers: [{ color: "#2f3948" }],
-      },
-      {
-        featureType: "transit.station",
-        elementType: "labels.text.fill",
-        stylers: [{ color: "#d59563" }],
-      },
-      {
-        featureType: "water",
-        elementType: "geometry",
-        stylers: [{ color: "#17263c" }],
-      },
-      {
-        featureType: "water",
-        elementType: "labels.text.fill",
-        stylers: [{ color: "#515c6d" }],
-      },
-      {
-        featureType: "water",
-        elementType: "labels.text.stroke",
-        stylers: [{ color: "#17263c" }],
-      },
-    ],
+    center: center,
+    zoom: 2.5,
+    styles: (new Date().getHours() > 15 || new Date().getHours() < 9)? darkmode : [],  // dark mode from 9am to 4pm just cuz, also manual refresh ofc
   });
   loadData()
 }
@@ -103,7 +103,7 @@ function loadData() {
   fetch('https://sheetdb.io/api/v1/tkuqr1trfymqt')
     .then(response => response.json())
     .then(data => {
-        console.log(data)
+        console.log(data);
         data.forEach((row, index)=>{
           city(row.name, row.date_est, row.url, row.points.split('--'), parseFloat(row.latitude), parseFloat(row.longitude), row.color)
         })
