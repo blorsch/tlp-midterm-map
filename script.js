@@ -96,7 +96,21 @@ function initMap() {
       },
     ],
   });
-  city('San Rafael', '6969', 'sanrafaelsomething.com', "It's cool--it's poppin'--I'm there lol--Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.".split('--'), sanRafael.lat, sanRafael.lng, purple);
+  loadData()
+}
+
+function loadData() {
+  fetch('https://sheetdb.io/api/v1/tkuqr1trfymqt')
+    .then(response => response.json())
+    .then(data => {
+        console.log(data)
+        data.forEach((row, index)=>{
+          city(row.name, row.date_est, row.url, row.points.split('--'), parseFloat(row.latitude), parseFloat(row.longitude), row.color)
+        })
+    })
+    .catch(error => {
+        console.error(error);
+    });
 }
 
 function city_content(name, date, link, points_array) {
