@@ -1,9 +1,10 @@
 let map;
+let is_dark_mode;
 
-const template = '<div class="content"><div class="header"><span class="name">{NAME}</span><span class="date">Est. {DATE}</span></div><div class="link"><a href="{LINK}">{LINK}</a></div><ul class="info">{POINTS}</ul>';  // I would do a DOM element if I had more time
+const template = '<div class="content{DARK-MODE}"><div class="header"><span class="name">{NAME}</span><span class="date">Est. {DATE}</span></div><div class="link"><a href="{LINK}">{LINK}</a></div><ul class="info">{POINTS}</ul>';  // I would do a DOM element if I had more time
 const center = {lat: 35, lng: 0};
 
-const darkmode = [  // dark mode styles
+const dark_mode = [  // dark mode styles
   { elementType: "geometry", stylers: [{ color: "#242f3e" }] },
   {
     elementType: "labels.text.stroke",
@@ -91,10 +92,14 @@ const darkmode = [  // dark mode styles
 ];
 
 function initMap() {
+  is_dark_mode = (new Date().getHours() > 15 || new Date().getHours() < 9);
+  if (is_dark_mode) {
+    document.getElementById('legend').classList.add('dark-mode');
+  }
   map = new google.maps.Map(document.getElementById("map"), {
     center: center,
     zoom: 2.5,
-    styles: (new Date().getHours() > 15 || new Date().getHours() < 9)? darkmode : [],  // dark mode from 9am to 4pm just cuz, also manual refresh ofc
+    styles: is_dark_mode? dark_mode : [],  // dark mode from 9am to 4pm just cuz, also manual refresh ofc
   });
   loadData()
 }
@@ -103,7 +108,7 @@ function loadData() {
   fetch('https://sheetdb.io/api/v1/tkuqr1trfymqt')
     .then(response => response.json())
     .then(data => {
-        console.log(data);
+        // console.log(data);
         data.forEach((row, index)=>{
           city(row.name, row.date_est, row.url, row.points.split('--'), parseFloat(row.latitude), parseFloat(row.longitude), row.color)
         })
@@ -114,7 +119,7 @@ function loadData() {
 }
 
 function city_content(name, date, link, points_array) {
-  return template.replace('{NAME}', name).replace('{DATE}', date).replace(/{LINK}/g, link).replace('{POINTS}', '<li>'+points_array.join('</li><li>')+'</li>')
+  return template.replace('{NAME}', name).replace('{DATE}', date).replace(/{LINK}/g, link).replace('{POINTS}', '<li>'+points_array.join('</li><li>')+'</li>').replace('{DARK-MODE}', is_dark_mode? ' dark-mode' : '')
 }
 
 function add_marker(lat, long, content, label, color) {
